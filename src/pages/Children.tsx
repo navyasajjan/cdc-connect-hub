@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Search, Filter, UserPlus, Eye, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { AddChildModal } from "@/components/modals/AddChildModal";
+import { ChildDetailModal } from "@/components/modals/ChildDetailModal";
+import { AttendanceModal } from "@/components/modals/AttendanceModal";
 
 const children = [
   {
@@ -55,12 +58,26 @@ const children = [
 
 export default function Children() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [addChildOpen, setAddChildOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [attendanceOpen, setAttendanceOpen] = useState(false);
+  const [selectedChild, setSelectedChild] = useState<any>(null);
 
   const filteredChildren = children.filter(child =>
     child.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     child.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     child.parent.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleViewDetails = (child: any) => {
+    setSelectedChild({ name: child.name, age: child.age, status: "Active", therapyPlan: child.therapyPlan, practitioner: child.practitioner });
+    setDetailOpen(true);
+  };
+
+  const handleSchedule = (child: any) => {
+    setSelectedChild({ name: child.name });
+    setAttendanceOpen(true);
+  };
 
   return (
     <div className="space-y-8">
@@ -70,7 +87,7 @@ export default function Children() {
           <h1 className="text-3xl font-bold mb-2">Children & Parents</h1>
           <p className="text-muted-foreground">Manage child registrations and parent information</p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary-dark">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary-dark" onClick={() => setAddChildOpen(true)}>
           <UserPlus className="w-4 h-4 mr-2" />
           Register New Child
         </Button>
@@ -158,11 +175,11 @@ export default function Children() {
 
               {/* Actions */}
               <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => handleViewDetails(child)}>
                   <Eye className="w-4 h-4 mr-1" />
                   View Profile
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => handleSchedule(child)}>
                   <Calendar className="w-4 h-4 mr-1" />
                   Schedule
                 </Button>
@@ -171,6 +188,22 @@ export default function Children() {
           </Card>
         ))}
       </div>
+
+      <AddChildModal open={addChildOpen} onOpenChange={setAddChildOpen} />
+      {selectedChild && (
+        <>
+          <ChildDetailModal 
+            open={detailOpen} 
+            onOpenChange={setDetailOpen}
+            child={selectedChild}
+          />
+          <AttendanceModal 
+            open={attendanceOpen} 
+            onOpenChange={setAttendanceOpen}
+            child={selectedChild}
+          />
+        </>
+      )}
     </div>
   );
 }

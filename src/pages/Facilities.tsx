@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Building2, MapPin, Users, Plus } from "lucide-react";
+import { FacilityStatusModal } from "@/components/modals/FacilityStatusModal";
 
 const facilities = [
   { id: 1, name: "Room 101", type: "Speech Therapy", capacity: 2, floor: 1, status: "in-session" as const, currentSession: "Emma S. - Dr. Sarah Chen" },
@@ -22,6 +24,14 @@ const facilityStats = [
 ];
 
 export default function Facilities() {
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [selectedFacility, setSelectedFacility] = useState<any>(null);
+
+  const handleUpdateStatus = (facility: any) => {
+    setSelectedFacility({ name: facility.name, type: facility.type, status: facility.status });
+    setStatusModalOpen(true);
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -100,7 +110,7 @@ export default function Facilities() {
                       )}
 
                       <div className="flex gap-2 pt-2">
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => handleUpdateStatus(facility)}>
                           Details
                         </Button>
                         <Button 
@@ -119,6 +129,14 @@ export default function Facilities() {
           </Card>
         ))}
       </div>
+
+      {selectedFacility && (
+        <FacilityStatusModal 
+          open={statusModalOpen} 
+          onOpenChange={setStatusModalOpen}
+          facility={selectedFacility}
+        />
+      )}
     </div>
   );
 }

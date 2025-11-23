@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Search, Filter, UserPlus, Calendar, Phone, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { PractitionerDetailModal } from "@/components/modals/PractitionerDetailModal";
 
 const practitioners = [
   {
@@ -60,11 +61,18 @@ const practitioners = [
 
 export default function Practitioners() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedPractitioner, setSelectedPractitioner] = useState<any>(null);
 
   const filteredPractitioners = practitioners.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.specialty.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleViewDetails = (practitioner: any) => {
+    setSelectedPractitioner({ name: practitioner.name, specialty: practitioner.specialty, status: practitioner.status, sessions: practitioner.todaySessions });
+    setDetailOpen(true);
+  };
 
   return (
     <div className="space-y-8">
@@ -157,7 +165,7 @@ export default function Practitioners() {
                   <Calendar className="w-4 h-4 mr-1" />
                   Schedule
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => handleViewDetails(practitioner)}>
                   View Profile
                 </Button>
               </div>
@@ -165,6 +173,14 @@ export default function Practitioners() {
           </Card>
         ))}
       </div>
+
+      {selectedPractitioner && (
+        <PractitionerDetailModal 
+          open={detailOpen} 
+          onOpenChange={setDetailOpen}
+          practitioner={selectedPractitioner}
+        />
+      )}
     </div>
   );
 }
