@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/use-notifications";
 
 interface AddChildModalProps {
   open: boolean;
@@ -14,6 +15,7 @@ interface AddChildModalProps {
 
 export function AddChildModal({ open, onOpenChange }: AddChildModalProps) {
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -28,10 +30,18 @@ export function AddChildModal({ open, onOpenChange }: AddChildModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const childName = `${formData.firstName} ${formData.lastName}`;
     toast({
       title: "Child registered successfully",
-      description: `${formData.firstName} ${formData.lastName} has been added to the system.`,
+      description: `${childName} has been added to the system.`,
     });
+    
+    addNotification({
+      type: "confirmation",
+      title: "New Child Registered",
+      message: `${childName} (${formData.age} years old) has been successfully registered with parent ${formData.parentName}`,
+    });
+    
     onOpenChange(false);
     setFormData({
       firstName: "",

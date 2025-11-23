@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/use-notifications";
 import { UserPlus } from "lucide-react";
 
 interface WalkInModalProps {
@@ -14,6 +15,7 @@ interface WalkInModalProps {
 
 export function WalkInModal({ open, onOpenChange }: WalkInModalProps) {
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
   const [formData, setFormData] = useState({
     parentName: "",
     childName: "",
@@ -28,6 +30,13 @@ export function WalkInModal({ open, onOpenChange }: WalkInModalProps) {
       title: "Walk-in registered",
       description: `${formData.childName} added to queue. Finding available therapist...`,
     });
+    
+    addNotification({
+      type: "arrival",
+      title: "Walk-In Arrival",
+      message: `${formData.childName} has arrived for walk-in ${formData.therapyType}. Parent: ${formData.parentName}`,
+    });
+    
     onOpenChange(false);
   };
 

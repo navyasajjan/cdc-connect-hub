@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/use-notifications";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 
@@ -22,6 +23,7 @@ const timeSlots = [
 
 export function BookAppointmentModal({ open, onOpenChange }: BookAppointmentModalProps) {
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     childName: "",
@@ -34,10 +36,18 @@ export function BookAppointmentModal({ open, onOpenChange }: BookAppointmentModa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const dateStr = date ? format(date, "PPP") : "";
     toast({
       title: "Appointment booked successfully",
-      description: `Session scheduled for ${date ? format(date, "PPP") : ""} at ${formData.timeSlot}`,
+      description: `Session scheduled for ${dateStr} at ${formData.timeSlot}`,
     });
+    
+    addNotification({
+      type: "confirmation",
+      title: "Appointment Booked",
+      message: `Session for ${formData.childName} scheduled on ${dateStr} at ${formData.timeSlot} with ${formData.practitioner}`,
+    });
+    
     onOpenChange(false);
   };
 

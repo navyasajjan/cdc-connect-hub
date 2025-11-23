@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { NotificationCenter } from "@/components/NotificationCenter";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -125,6 +126,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Menu className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-4">
+              <NotificationCenter />
               <span className="text-sm text-muted-foreground">
                 {new Date().toLocaleDateString("en-US", { 
                   weekday: "long", 
