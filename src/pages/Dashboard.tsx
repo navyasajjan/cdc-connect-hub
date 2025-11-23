@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { 
   Users, 
   UserCheck, 
@@ -15,6 +16,9 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { AddChildModal } from "@/components/modals/AddChildModal";
+import { BookAppointmentModal } from "@/components/modals/BookAppointmentModal";
+import { WalkInModal } from "@/components/modals/WalkInModal";
 
 const upcomingSessions = [
   { id: 1, time: "09:00 AM", child: "Emma S.", practitioner: "Dr. Sarah Chen", therapy: "Speech Therapy", room: "Room 201", status: "pending" as const },
@@ -31,6 +35,9 @@ const alerts = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [addChildOpen, setAddChildOpen] = useState(false);
+  const [bookAppointmentOpen, setBookAppointmentOpen] = useState(false);
+  const [walkInOpen, setWalkInOpen] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -80,18 +87,18 @@ export default function Dashboard() {
             label="Register Child"
             icon={UserPlus}
             variant="primary"
-            onClick={() => navigate("/children")}
+            onClick={() => setAddChildOpen(true)}
           />
           <QuickActionButton
             label="Book Slot"
             icon={Calendar}
             variant="secondary"
-            onClick={() => navigate("/appointments")}
+            onClick={() => setBookAppointmentOpen(true)}
           />
           <QuickActionButton
             label="Check-In Walk-In"
             icon={ClipboardCheck}
-            onClick={() => navigate("/appointments")}
+            onClick={() => setWalkInOpen(true)}
           />
           <QuickActionButton
             label="Update Facility"
@@ -153,6 +160,10 @@ export default function Dashboard() {
           </div>
         </Card>
       </div>
+
+      <AddChildModal open={addChildOpen} onOpenChange={setAddChildOpen} />
+      <BookAppointmentModal open={bookAppointmentOpen} onOpenChange={setBookAppointmentOpen} />
+      <WalkInModal open={walkInOpen} onOpenChange={setWalkInOpen} />
     </div>
   );
 }
